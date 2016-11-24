@@ -48,9 +48,17 @@ import Foreign.ForeignPtr
 import Foreign.Ptr
 import Foreign.Storable
 
-import qualified Data.Packed.Development as I
-import qualified Data.Packed.Vector as I
+import qualified Numeric.LinearAlgebra.Devel as I
+import qualified Numeric.LinearAlgebra.Data as I
+-- import qualified Data.Packed.Devel as I
+-- import qualified Data.Packed.Vector as I
+import qualified Numeric.LinearAlgebra.Static as I
+import qualified Data.Vector.Storable as SV
 import Data.Int
+  
+-- | Number of elements
+mydim :: (Storable t) => SV.Vector t -> Int
+mydim = SV.length
 
 ---------------------------
 -- Memory-Mapping 'Vector' from disk
@@ -138,7 +146,7 @@ unsafeLazyMMapVectors' fileSize
         return (offset, fI nelts)
 
       splitVecs :: I.Vector a -> [I.Vector a]
-      splitVecs bigVec = let nvecs = I.dim bigVec `div` numEltsPerVec
+      splitVecs bigVec = let nvecs = mydim bigVec `div` numEltsPerVec
                          in I.takesV (replicate nvecs numEltsPerVec) bigVec
 
       mmapAll :: IO [I.Vector a]
